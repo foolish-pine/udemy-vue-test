@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Props</title>
+    <style>
+      .parent {
+        width: 800px;
+        margin: 0 auto;
+        border: 1px red solid;
+      }
+
+      .child {
+        width: 30%;
+        margin: 0 auto;
+        border: 1px blue solid;
+      }
+
+      .grand-child {
+        width: 20%;
+        margin: 0 auto;
+        border: 1px green solid;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="parent">
+      <child-component class="child"></child-component></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+      const eventBus = new Vue();
+
+      const grandChildComponent = {
+        template: `
+        <div>孫のコンポーネントです
+          <button @click="testEvent">ボタン</button></div>
+        `,
+        methods: {
+          testEvent() {
+            eventBus.$emit("eventBus-test", "孫のボタン")
+          }
+        }
+      };
+
+      const childComponent = {
+        components: { grandChildComponent },
+        template: `
+        <div>子のコンポーネントです
+          <grand-child-component class="grand-child"></grand-child-component></div>
+        `,
+        props: {},
+        data() {
+          return {};
+        },
+      };
+
+      const app = new Vue({
+        components: { childComponent },
+        el: "#app",
+        data() {
+          return {};
+        },
+        methods: {},
+        mounted(){
+          eventBus.$on("eventBus-test", test => console.log(test))
+        }
+      });
+    </script>
+  </body>
+</html>
